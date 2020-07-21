@@ -1,0 +1,13 @@
+﻿name: "cmma"
+output_dir: "../docs"
+navbar:
+  title: "Causal Meta-Mediation Analysis"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Simulation"
+      href: simulation.html
+output:
+  html_document:    
+    theme: cosmo
+    highlight: textmate

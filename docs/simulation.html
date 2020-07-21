@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Simulation</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Causal Meta-Mediation Analysis</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="simulation.html">Simulation</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Simulation</h1>
+
+</div>
+
+
+<div id="simulation-setup" class="section level2">
+<h2>Simulation Setup</h2>
+<pre class="r"><code>set.seed(42)
+
+# This function takes in model specification and simulation parameters to return a function that can be used to simulate the data on the individual level
+simulate_data_generator &lt;- function(y_model, samplesize_per_trial, no_trials,  sd.m_star = 3,
+                          sd.y_star = 3, cor.m_star.y_star = 0.95,
+                          num_treatment_group = 3,
+                          mu.tau = c(0.5,1,2.5),
+                          mu.gamma = c(0,1.5,3),
+                          violate_A2 = FALSE,
+                          violate_A3 = FALSE,
+                          violate_A4 = FALSE
+){
+  func &lt;- function(){
+      # individual error structure
+    mu &lt;- c(m_star=0, y_star=0, noise_beta_correlated = 0) # means for m_star and y_star
+    
+    sd &lt;- c(sd.m_star, sd.y_star, 0.5) # standard deviations
+    cormat &lt;- rbind(c(1,cor.m_star.y_star, 0.8),c(cor.m_star.y_star,1, 0.8), c(0.8, 0.8, 1))
+    # var-cov matrix
+    covmat &lt;- diag(sd) %*% cormat %*% diag(sd) 
+    
+    df &lt;- mvrnorm(samplesize_per_trial*no_trials,mu,covmat)%&gt;%
+      as_tibble()
+    
+    # Set model parameters
+    phi &lt;- runif(no_trials,-2,2)
+    theta &lt;- runif(no_trials,-2,2)
+    trial_tau &lt;- runif(no_trials,-3, 3)
+    trial_gamma &lt;- rep(0,no_trials)
+    tau_innovation &lt;- rnorm(samplesize_per_trial*no_trials,0,0.5)
+    gamma_innovation &lt;- rnorm(samplesize_per_trial*no_trials,0,0.5)
+    beta_innovation &lt;- rnorm(samplesize_per_trial*no_trials,0,0.5)
+    
+    if (violate_A2){
+      beta_innovation &lt;- df$noise_beta_correlated
+    }
+    if (violate_A3){
+      complement &lt;- function(y, rho, x) {
+        # Generate a new vector correlates with y
+        if (missing(x)) x &lt;- runif(length(y),-1, 1) # Optional: supply a default if `x` is not given
+        y.perp &lt;- residuals(lm(x ~ y))
+        rho * sd(y.perp) * y + y.perp * sd(y) * sqrt(1 - rho^2)
+      }
+      trial_gamma &lt;- complement(trial_tau, 0.8)
+    }
+    if (violate_A4){
+      trial_tau &lt;- rep(0,no_trials)
+    }
+    df &lt;- 
+      df %&gt;% mutate(    trial_index=row_number()%%no_trials+1,
+                        treatment_group=trial_index%%num_treatment_group+1,
+                        Ti = rbernoulli(samplesize_per_trial*no_trials),
+                        phi_s = phi[as.vector(trial_index)], 
+                        phi_s = phi[as.vector(trial_index)], 
+                        phi_s = phi[as.vector(trial_index)], 
+                        tau_s = mu.tau[as.vector(treatment_group)]+ trial_tau[as.vector(trial_index)],
+                        theta_s = theta[as.vector(trial_index)],
+                        gamma_s = mu.gamma[as.vector(treatment_group)]+trial_gamma[as.vector(trial_index)],
+                        noise_tau=tau_innovation,
+                        noise_gamma=gamma_innovation,
+                        noise_beta=beta_innovation,
+                        Mi = phi_s + tau_s*Ti+ m_star + noise_tau*Ti,
+                        Yi = y_model(theta_s, gamma_s, Ti, Mi, y_star, noise_gamma, noise_beta)
+      )%&gt;%
+      mutate(treatment_group=factor(treatment_group),
+             trial_index=factor(trial_index))
+  
+    return(df)
+  }
+  return(func)
+}
+
+# Generate meta data from individual level data
+get_meta_data &lt;- function(individual_data, highest_degree = 1){
+  # This function run simple regressions to estimate ATE for one trial on individual level data .
+    regress_one_trial &lt;- function(data, highest_degree){
+      result &lt;- lm(Yi~1+Ti, data=data)%&gt;%summary
+      delta_y &lt;- result$coefficients[&#39;TiTRUE&#39;,1]
+      delta_y_ste &lt;- result$coefficients[&#39;TiTRUE&#39;,2]
+      
+      coeff_res = c(&#39;delta_y&#39; = delta_y, &#39;delta_y_ste&#39; = delta_y_ste)
+      for (i in 1: highest_degree) {
+          result &lt;- lm(I(Mi^i)~1+Ti, data=data)%&gt;%summary
+          temp_delta &lt;- result$coefficients[&#39;TiTRUE&#39;,1]
+          names(temp_delta) = paste(&#39;delta_m&#39;, i, sep=&#39;&#39;)
+          temp_delta_ste &lt;- result$coefficients[&#39;TiTRUE&#39;,2]
+          names(temp_delta_ste) = paste(&#39;delta_m&#39;, i, &#39;_ste&#39;, sep=&#39;&#39;)
+          coeff_res = c(coeff_res, temp_delta, temp_delta_ste)
+      }
+    out &lt;- bind_rows(coeff_res)
+    return(out)
+  }
+  meta_data &lt;- individual_data%&gt;%
+      group_by(trial_index,treatment_group)%&gt;%
+      do(regress_one_trial(., highest_degree=highest_degree))%&gt;%
+      ungroup
+  return(meta_data)
+} </code></pre>
+</div>
+<div id="potential-outcome-model" class="section level2">
+<h2>Potential Outcome Model</h2>
+<div id="linear-model" class="section level3">
+<h3>Linear model</h3>
+<p><span class="math inline">\(Y_i = (\beta+\epsilon_{i}^{\beta})\times M_i + (\gamma_s+ \epsilon_{i}^{\gamma}) \times T_i + \theta_s + Y_i^*\)</span></p>
+<pre class="r"><code>simu_model_1 &lt;- function(theta_s, gamma_s, Ti, Mi, y_star, noise_gamma, noise_beta){
+  beta &lt;- 4
+  Yi =  beta*Mi + theta_s + gamma_s*Ti + y_star + noise_gamma*Ti + noise_beta*Mi
+  return(Yi)
+}</code></pre>
+<div id="we-drew-figure-3-under-this-model" class="section level4">
+<h4>We drew figure 3 under this model</h4>
+<pre class="r"><code># Draw graph
+## Simple case, single treatment group
+sim_data_func &lt;- simulate_data_generator(simu_model_1, 400,20, 
+                          sd.y_star = 6,
+                          num_treatment_group = 1,
+                          mu.gamma = c(3))
+sim_data &lt;- sim_data_func()
+true_dose &lt;- function(m) 4*m
+samp_df &lt;- sim_data%&gt;%sample_n(100)
+
+draw_df &lt;- bind_rows(samp_df%&gt;%
+                       mutate(id= row_number())%&gt;%
+                       mutate(Mi=range(samp_df%&gt;%dplyr::select(Mi))[1],
+                              Yi = simu_model_1(theta_s, gamma_s, Ti, Mi, y_star, noise_gamma, noise_beta)),
+                     samp_df%&gt;%
+                       mutate(id= row_number())%&gt;%
+                       mutate(Mi=range(samp_df%&gt;%dplyr::select(Mi))[2],
+                              Yi = simu_model_1(theta_s, gamma_s, Ti, Mi, y_star, noise_gamma, noise_beta)))
+
+fit &lt;- lm(Yi ~ 1+ Mi + Ti, data=samp_df)
+scale = 0.3
+g &lt;- ggplot(data = samp_df, aes(x=Mi, y=Yi)) +
+  geom_smooth(data =draw_df, 
+              aes(x=Mi, y=Yi,group=id), 
+              method=&#39;lm&#39;,se = F,
+              color=&#39;grey&#39;,
+              alpha = 0.5,
+              size =1.2* scale)+
+  geom_point(size =1.8 * scale)+
+  # geom_smooth(method=&#39;lm&#39;,formula = str(fit$call), se = F, color = &#39;black&#39;, size =0.2)+
+  geom_smooth(method=&#39;loess&#39;, se = F, color = &#39;black&#39;, size =1.8* scale)+
+  stat_function(fun=true_dose, color=&#39;blue&#39;, size=2*scale)+
+  labs(x=&#39;M&#39;,y=&#39;Y&#39;)+
+  theme_few()
+g</code></pre>
+<p><img src="simulation_files/figure-html/draw_graph-1.png" width="672" /></p>
+<pre class="r"><code># ggsave(&#39;potential_outcomes.png&#39;,g,scale=scale)</code></pre>
+</div>
+<div id="a-simple-analysis-with-various-methods-on-one-simulation-under-this-model" class="section level4">
+<h4>A simple analysis with various methods on one simulation under this model</h4>
+<pre class="r"><code># Heterogeneous direct treatment effects
+sim_data &lt;- simulate_data_generator(simu_model_1,1000,10)
+sim_data_temp &lt;- sim_data()
+sim_data_temp &lt;- sim_data_temp%&gt;%bind_cols(
+  as_tibble(model.matrix(~0+treatment_group,data = sim_data_temp)*sim_data_temp$Ti)%&gt;%
+    rename_at(vars(matches(&quot;treatment_group&quot;)),list(~paste(.,&quot;Ti&quot;,sep =&quot;&quot;))))
+
+#  OLS SI (LSEM)
+felm(Yi~1+Mi|factor(Ti):trial_index +trial_index|0|trial_index,data=sim_data_temp) %&gt;% summary</code></pre>
+<pre><code>## 
+## Call:
+##    felm(formula = Yi ~ 1 + Mi | factor(Ti):trial_index + trial_index |      0 | trial_index, data = sim_data_temp) 
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -12.8213  -1.1114   0.0036   1.1176  13.4563 
+## 
+## Coefficients:
+##    Estimate Cluster s.e. t value Pr(&gt;|t|)    
+## Mi  4.92506      0.01052   468.1   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.092 on 9979 degrees of freedom
+## Multiple R-squared(full model): 0.9849   Adjusted R-squared: 0.9849 
+## Multiple R-squared(proj model): 0.9809   Adjusted R-squared: 0.9809 
+## F-statistic(full model, *iid*):3.263e+04 on 20 and 9979 DF, p-value: &lt; 2.2e-16 
+## F-statistic(proj model): 2.192e+05 on 1 and 9 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># IV (sobel)
+felm(Yi~1+Ti|trial_index|(Mi~trial_index:factor(Ti))|trial_index,data=sim_data_temp)%&gt;%summary    </code></pre>
+<pre><code>## 
+## Call:
+##    felm(formula = Yi ~ 1 + Ti | trial_index | (Mi ~ trial_index:factor(Ti)) |      trial_index, data = sim_data_temp) 
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -16.6696  -2.0697  -0.0936   2.0101  21.2822 
+## 
+## Coefficients:
+##           Estimate Cluster s.e. t value Pr(&gt;|t|)    
+## TiTRUE      1.5219       0.3975   3.829  0.00404 ** 
+## `Mi(fit)`   4.0115       0.2214  18.117 2.17e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.529 on 9988 degrees of freedom
+## Multiple R-squared(full model): 0.9571   Adjusted R-squared: 0.9571 
+## Multiple R-squared(proj model): 0.9502   Adjusted R-squared: 0.9502 
+## F-statistic(full model, *iid*): 4429 on 11 and 9988 DF, p-value: &lt; 2.2e-16 
+## F-statistic(proj model): 224.2 on 2 and 9 DF, p-value: 2.102e-08 
+## F-statistic(endog. vars):328.2 on 1 and 9 DF, p-value: 2.168e-08</code></pre>
+<pre class="r"><code># IV equivalent
+iv_form &lt;- as.formula(paste(&quot;Yi~1+&quot;, 
+                            paste(grep(&quot;treatment_group.*Ti&quot;, names(sim_data_temp), value=TRUE), 
+                                  collapse = &quot; + &quot;),
+                            &quot;|trial_index|(Mi~trial_index:factor(Ti))|trial_index&quot;) )
+felm(iv_form,data=sim_data_temp)%&gt;%summary </code></pre>
+<pre><code>## 
+## Call:
+##    felm(formula = iv_form, data = sim_data_temp) 
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -16.4798  -2.0000  -0.1057   1.9148  21.7856 
+## 
+## Coefficients:
+##                    Estimate Cluster s.e. t value Pr(&gt;|t|)    
+## treatment_group1Ti  0.05094      0.08840   0.576    0.579    
+## treatment_group2Ti  1.49333      0.06467  23.092 2.55e-09 ***
+## treatment_group3Ti  2.96457      0.27366  10.833 1.83e-06 ***
+## `Mi(fit)`           4.02955      0.03665 109.932 2.16e-15 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.44 on 9986 degrees of freedom
+## Multiple R-squared(full model): 0.9593   Adjusted R-squared: 0.9592 
+## Multiple R-squared(proj model): 0.9527   Adjusted R-squared: 0.9527 
+## F-statistic(full model, *iid*): 3965 on 13 and 9986 DF, p-value: &lt; 2.2e-16 
+## F-statistic(proj model):  4141 on 4 and 9 DF, p-value: 1.114e-14 
+## F-statistic(endog. vars):1.209e+04 on 1 and 9 DF, p-value: 2.165e-15</code></pre>
+<pre class="r"><code># Liml
+felm(iv_form,data=sim_data_temp, kclass=&#39;liml&#39;)%&gt;%summary    </code></pre>
+<pre><code>## 
+## Call:
+##    felm(formula = iv_form, data = sim_data_temp, kclass = &quot;liml&quot;) 
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -16.707  -2.029  -0.102   1.960  22.036 
+## 
+## Coefficients:
+##                    Estimate Cluster s.e. t value Pr(&gt;|t|)    
+## treatment_group1Ti  0.08836      0.08789   1.005    0.341    
+## treatment_group2Ti  1.50426      0.06696  22.466 3.25e-09 ***
+## treatment_group3Ti  2.99915      0.26908  11.146 1.44e-06 ***
+## Mi                  4.00670      0.03959 101.201 4.56e-15 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.499 on 9967 degrees of freedom
+## Multiple R-squared(full model): 0.9579   Adjusted R-squared: 0.9578 
+## Multiple R-squared(proj model): 0.9512   Adjusted R-squared: 0.951 
+## F-statistic(full model, *iid*): 7093 on 32 and 9967 DF, p-value: &lt; 2.2e-16 
+## F-statistic(proj model):  3404 on 4 and 9 DF, p-value: 2.689e-14</code></pre>
+<pre class="r"><code># CMMA
+meta_data &lt;- get_meta_data(sim_data_temp, 1)
+lm(delta_y ~ 1  + treatment_group + delta_m1, data=meta_data)%&gt;%summary</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = delta_y ~ 1 + treatment_group + delta_m1, data = meta_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.66822 -0.13900  0.07165  0.13326  0.44363 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)       0.05102    0.24389   0.209  0.84121    
+## treatment_group2  1.44227    0.29343   4.915  0.00267 ** 
+## treatment_group3  2.91337    0.30040   9.698 6.90e-05 ***
+## delta_m1          4.02950    0.07330  54.973 2.43e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3677 on 6 degrees of freedom
+## Multiple R-squared:  0.9983, Adjusted R-squared:  0.9974 
+## F-statistic:  1145 on 3 and 6 DF,  p-value: 1.159e-08</code></pre>
+</div>
+</div>
+<div id="quadratic-model" class="section level3">
+<h3>Quadratic Model</h3>
+<p><span class="math inline">\(Y_i = (\beta_1+\epsilon_{i}^{\beta})\times M_i +\beta_2*Mi^2 + (\gamma_s+ \epsilon_{i}^{\gamma}) \times T_i + \theta_s + Y_i^*\)</span></p>
+<pre class="r"><code># Second model second degree polynomial
+# Y_i = beta[1]*Mi + beta[2]*Mi^2 + theta_s + gamma_s*Ti + y_star
+
+simu_model_2 &lt;- function(theta_s, gamma_s, Ti, Mi, y_star, noise_gamma, noise_beta){
+  beta &lt;- c(4, 2)
+  Yi =  beta[1]*Mi + beta[2]*Mi^2 + theta_s + gamma_s*Ti + y_star + noise_gamma*Ti + noise_beta*Mi
+  return(Yi)
+}</code></pre>
+</div>
+<div id="cubic-model" class="section level3">
+<h3>Cubic Model</h3>
+<p><span class="math inline">\(Y_i = (\beta_1+\epsilon_{i}^{\beta})\times M_i +\beta_2*Mi^2 + \beta_3*Mi^3+ (\gamma_s+ \epsilon_{i}^{\gamma}) \times T_i + \theta_s + Y_i^*\)</span></p>
+<pre class="r"><code># Third model third degree polynomial
+# Y_i = beta[1]*Mi + beta[2]*Mi^2 + beta[3]*Mi^3  + theta_s + gamma_s*Ti + y_star 
+simu_model_3 &lt;- function(theta_s, gamma_s, Ti, Mi, y_star, noise_gamma, noise_beta){
+  beta &lt;- c(4, 0, 5)
+  Yi =  beta[1]*Mi + beta[2]*Mi^2 + beta[3]*Mi^3  + theta_s + gamma_s*Ti + y_star + noise_gamma*Ti
+  return(Yi)
+}</code></pre>
+</div>
+</div>
+<div id="estimation-function-and-helper-functions" class="section level2">
+<h2>Estimation Function and Helper Functions</h2>
+<pre class="r"><code># Estimation results from single simulation
+MC_single_sim&lt;- function(index,simulate_data_f,CMMA_estimator_only=FALSE, DRF_degree=1, wald_test=FALSE){
+    # if(index %%10==0){
+    #   print(paste(&quot;Prcessing simulation no.&quot;,index))
+    # }
+    
+    # get the simulated data
+    sim_data &lt;- simulate_data_f()
+    # construct interaction terms between treatment groups and Ti
+    sim_data &lt;- sim_data%&gt;%bind_cols(
+      as_tibble(model.matrix(~0+treatment_group,data = sim_data)*sim_data$Ti)%&gt;%
+        rename_at(vars(matches(&quot;treatment_group&quot;)),list(~paste(.,&quot;Ti&quot;,sep =&quot;&quot;))))
+    
+    # prepare output data
+    out &lt;- data.frame(matrix(ncol = 3, nrow = 0))
+    colnames(out) &lt;- c(&quot;valname&quot;, &quot;value&quot;, &quot;model&quot;)
+    out &lt;- as_tibble(out)
+    
+    log_results &lt;- function(out, m_vars, regres_summary, model_desc, IV=FALSE){
+      for (i in seq_along(m_vars)){
+        var &lt;- m_vars[i]
+        if (IV){
+          var &lt;- paste(&#39;`&#39;,var,&#39;(fit)&#39;,&#39;`&#39;,sep=&#39;&#39;)
+        }
+        # Point estimates 
+        point_est &lt;- regres_summary$coefficients[, 1]
+        # Standard Error
+        std_est &lt;- regres_summary$coefficients[, 2]
+        if (length(point_est)==1 &amp; length(m_vars)==1){
+          names(point_est) = var
+          names(std_est) = var
+        }
+        out &lt;- out %&gt;% 
+          add_row(valname = paste(&#39;M&#39;,i,&#39;_coef&#39;,sep = &#39;&#39;), 
+                  value=point_est[var], 
+                  model = model_desc)%&gt;%
+          add_row(valname = paste(&#39;M&#39;,i,&#39;_std&#39;,sep = &#39;&#39;), 
+                  value=std_est[var], 
+                  model = model_desc)
+      }
+      return(out)
+    }
+      
+    if (!wald_test){
+    # get meta data
+    meta_data &lt;- get_meta_data(sim_data, DRF_degree)
+    
+    m_vars&lt;-paste(&#39;delta_m&#39;,seq(1:DRF_degree), sep=&#39;&#39;)
+    ## Proposed method (CMMA)
+    regres &lt;- lm(formula(paste(&#39;delta_y ~ 1 +treatment_group + &#39;, 
+                               paste(m_vars, collapse = &#39;+&#39;))), 
+                 data=meta_data)%&gt;%summary
+
+    out &lt;-  out%&gt;%log_results(m_vars, regres, &#39;CMMA&#39;)
+
+      if (CMMA_estimator_only == FALSE) {
+        M_vars &lt;- paste(&#39;I(Mi^&#39;,seq(1:DRF_degree),&#39;)&#39;, sep=&#39;&#39;)
+        ## Simple pooled OLS (OLS SI)
+        regres &lt;- felm(formula(paste(&#39;Yi~1+&#39;, 
+                             paste(M_vars, collapse = &#39;+&#39;),
+                             &#39;|factor(Ti):trial_index +trial_index|0|trial_index&#39;)),
+                       data=sim_data)%&gt;%summary
+        out &lt;-  out%&gt;%log_results(M_vars, regres, &#39;pooled ols&#39;)
+
+        ## IV method (small)
+        regres &lt;- felm(formula(paste(&#39;Yi~1+Ti|trial_index|(&#39;, 
+                                     paste(M_vars, collapse =&#39;|&#39;), 
+                                     &#39;~trial_index:Ti)|trial_index&#39;)),
+                       data=sim_data)%&gt;%summary
+
+        out &lt;-  out%&gt;%log_results(M_vars, regres, &#39;IV (small)&#39;, IV=T)
+
+        ## proposed IV equivalent
+        iv_form &lt;- as.formula(paste(&quot;Yi~1+&quot;, 
+                                    paste(grep(&quot;treatment_group.*Ti&quot;, names(sim_data), value=TRUE), 
+                                          collapse = &quot; + &quot;),
+                                    &quot;|trial_index|(&quot;,
+                                    paste(M_vars, collapse =&#39;|&#39;),
+                                    &quot;~trial_index:factor(Ti))|0&quot;) )
+        
+        regres &lt;- felm(iv_form,data=sim_data)%&gt;%summary    
+        
+        out &lt;-  out%&gt;%log_results(M_vars, regres, &#39;proposed IV equivalent&#39;, IV=T)
+
+        ## Liml
+        regres &lt;- felm(iv_form,data=sim_data,kclass=&#39;liml&#39;)%&gt;%summary    
+        
+        out &lt;-  out%&gt;%log_results(M_vars, regres, &#39;Liml equivalent&#39;)
+      }
+
+    }
+    else
+    {
+      # get meta data
+      meta_data &lt;- get_meta_data(sim_data, 3)
+      # This is code for wald test when hypothesized degree of DRF is 3
+      m_vars&lt;-paste(&#39;delta_m&#39;,seq(1:3), sep=&#39;&#39;)
+      ## Proposed method (CMMA) with just M
+      regres &lt;- lm(formula(paste(&#39;delta_y ~ 1 +treatment_group + &#39;, 
+                                 paste(m_vars[1], collapse = &#39;+&#39;))), 
+                   data=meta_data)%&gt;%summary
+
+      out &lt;-  out%&gt;%log_results(m_vars[1], regres, &#39;CMMA with M&#39;)
+
+      ## Proposed method (CMMA) with just M and M^2
+      regres &lt;- lm(formula(paste(&#39;delta_y ~ 1 +treatment_group + &#39;, 
+                                 paste(m_vars[1:2], collapse = &#39;+&#39;))), 
+                   data=meta_data)%&gt;%summary
+
+      out &lt;-  out%&gt;%log_results(m_vars[1:2], regres, &#39;CMMA with M, M^2&#39;)
+      
+      ## Proposed method (CMMA) with just M, M^2, and M^3
+      regres_wald &lt;- lm(formula(paste(&#39;delta_y ~ 1 +treatment_group + &#39;, 
+                                      paste(m_vars[1:3], collapse = &#39;+&#39;))), 
+                        data=meta_data)
+      regres &lt;- regres_wald %&gt;%summary
+
+      out &lt;-  out%&gt;%log_results(m_vars[1:3], regres, &#39;CMMA with M, M^2 and M^3&#39;)
+
+      # Wald Test
+      # regress cubic
+      wald &lt;-  wald.test(b = coef(regres_wald), Sigma = vcov(regres_wald), Terms = 4)
+      out &lt;- out %&gt;% 
+        add_row(valname = &quot;p value, m&quot;, value=wald$result$chi2[&#39;P&#39;], model =&#39;wald test&#39;)
+      wald &lt;-  wald.test(b = coef(regres_wald), Sigma = vcov(regres_wald), Terms = 5)
+      out &lt;- out %&gt;% 
+        add_row(valname = &quot;p value, m2&quot;, value=wald$result$chi2[&#39;P&#39;], model =&#39;wald test&#39;)
+      wald &lt;-  wald.test(b = coef(regres_wald), Sigma = vcov(regres_wald), Terms = 6)
+      out &lt;- out %&gt;% 
+        add_row(valname = &quot;p value, m3&quot;, value=wald$result$chi2[&#39;P&#39;], model =&#39;wald test&#39;)
+      wald &lt;- wald.test(b = coef(regres_wald), Sigma = vcov(regres_wald), Terms = 4:5)
+      out &lt;- out %&gt;% 
+        add_row(valname = &quot;p value, m m2&quot;, value=wald$result$chi2[&#39;P&#39;], model =&#39;wald test&#39;)
+      wald &lt;- wald.test(b = coef(regres_wald), Sigma = vcov(regres_wald), Terms = c(4,6))
+      out &lt;- out %&gt;% 
+        add_row(valname = &quot;p value, m m3&quot;, value=wald$result$chi2[&#39;P&#39;], model =&#39;wald test&#39;)
+      wald &lt;- wald.test(b = coef(regres_wald), Sigma = vcov(regres_wald), Terms = 5:6)
+      out &lt;- out %&gt;% 
+        add_row(valname = &quot;p value, m2 m3&quot;, value=wald$result$chi2[&#39;P&#39;], model =&#39;wald test&#39;)
+      wald &lt;- wald.test(b = coef(regres_wald), Sigma = vcov(regres_wald), Terms = 4:6)
+      out &lt;- out %&gt;% 
+        add_row(valname = &quot;p value, m m2 m3&quot;, value=wald$result$chi2[&#39;P&#39;], model =&#39;wald test&#39;)
+    }
+    out &lt;- out%&gt;%mutate(simulation_index=index)
+    return(out)
+}</code></pre>
+<pre class="r"><code># This function runs the monte carlo simulation
+mc_model_main &lt;- function(y_model, samplesize_per_trial, no_trials, no_sims=100, CMMA_estimator_only=FALSE, DRF_degree=1, wald_test=FALSE,seed=42, ...){
+  set.seed(seed)
+  
+  simulate_data_f = simulate_data_generator(y_model,samplesize_per_trial,
+                                            no_trials, ...)
+  # parameters for monte carlo 
+  outcomes &lt;- mclapply(1:no_sims, MC_single_sim, 
+                       simulate_data_f=simulate_data_f,
+                       CMMA_estimator_only=CMMA_estimator_only, 
+                       DRF_degree=DRF_degree, 
+                       wald_test=wald_test )
+  outcomes &lt;- outcomes %&gt;% bind_rows%&gt;%
+    mutate(&quot;samplesize_per_trial&quot;=samplesize_per_trial,&quot;no_trials&quot;=no_trials)
+  return(outcomes)
+}
+
+
+# Compute coverage probabilities for the 90% and 95% CI and other stats from simulation results
+stats_summary &lt;- function(data,model_name,est_valname,std_valname, true_value,level=0.95){
+  remove_outliers &lt;- function(x, na.rm = TRUE, ...) {
+    qnt &lt;- quantile(x, probs=c(.25, .75), na.rm = na.rm, ...)
+    H &lt;- 5 * IQR(x, na.rm = na.rm)
+    y &lt;- x
+    y[x &lt; (qnt[1] - H)] &lt;- NA
+    y[x &gt; (qnt[2] + H)] &lt;- NA
+    y
+  }
+  df &lt;- data%&gt;%filter(model==model_name)%&gt;%
+    spread(valname,value)%&gt;%
+    dplyr::select(est_valname,std_valname,samplesize_per_trial,no_trials)
+  
+  df &lt;- df%&gt;%rename(estimate=1, std=2)%&gt;% 
+    mutate_at(vars(estimate,std), remove_outliers)%&gt;%
+    mutate(CI.up = estimate + qnorm(0.5+level/2)*std,
+           CI.lo = estimate - qnorm(0.5+level/2)*std,
+           in_ci=CI.lo &lt; true_value &amp; true_value &lt; CI.up)%&gt;%
+    summarise(ci_covprob = mean(in_ci,na.rm=T), 
+              point.est = mean(estimate,na.rm=T),
+              mse=mean((estimate-true_value)^2,na.rm=T),
+              samplesize_per_trial=mean(samplesize_per_trial),
+              no_trials=mean(no_trials),
+              n= sum(!is.na(estimate)))%&gt;%
+    mutate(bias = point.est-true_value,
+           rmse=sqrt(mse),
+           Estimator=model_name)
+  return(df)
+}
+
+simulation_summary &lt;- function(data, models,est_valname,std_valname, true_value, level=0.95){
+  lapply(models,
+         stats_summary,
+         data=data,
+         est_valname=est_valname,
+         std_valname=std_valname,
+         true_value=true_value)%&gt;%
+  bind_rows()
+}
+
+get_avg_simulated_estimate &lt;- function(data, model_name,est_valnames){
+  data%&gt;%filter(model==model_name)%&gt;%
+              filter(valname %in% est_valnames)%&gt;%
+              spread(valname,value)%&gt;%
+              dplyr::select(!!est_valnames)%&gt;%
+              summarise_all(mean)
+}
+# Get wald test result
+wald_test_summary &lt;- function(data, level=0.95){
+  data%&gt;%filter(model==&#39;wald test&#39;)%&gt;%
+    spread(valname,value)%&gt;%
+    dplyr::select(-model,-samplesize_per_trial,-no_trials)%&gt;%
+    summarise_all(function(x) mean(x&lt;(1-level)))
+}</code></pre>
+</div>
+<div id="simulation-results" class="section level2">
+<h2>Simulation Results</h2>
+<div id="table-1-finite-sample-performance-comparison" class="section level3">
+<h3>Table 1: Finite-Sample Performance Comparison</h3>
+<pre class="r"><code># Table output
+# ## Increase samplesize per trial
+out &lt;- lapply(c(200,500,1000), function(n) mc_model_main(simu_model_1, n, 50))
+
+out%&gt;%
+  map(simulation_summary,
+      models=c(&#39;CMMA&#39;,&#39;proposed IV equivalent&#39;,&#39;pooled ols&#39;,&#39;IV (small)&#39;, &#39;Liml equivalent&#39;),
+      est_valname=&#39;M1_coef&#39;,std_valname=&#39;M1_std&#39;, 4)%&gt;%
+  bind_rows()%&gt;%
+  mutate(ci_covprob = paste(round(ci_covprob*100,1),&#39;%&#39;,sep = &#39;&#39;))%&gt;%
+  dplyr::select(samplesize_per_trial,no_trials,Estimator,bias,ci_covprob)%&gt;%
+  group_by(samplesize_per_trial)%&gt;%
+  group_split()%&gt;%
+  bind_cols()%&gt;%
+  dplyr::select(-matches(&#39;Estimator.&#39;),
+                -starts_with(&#39;no_trials&#39;),
+                -starts_with(&#39;samplesize_per_trial&#39;))%&gt;%
+  mutate(Estimator = factor(Estimator, 
+                            labels = c(&#39;LIML&#39;,&#39;CMMA&#39;,&#39;Full Sample 2SLS&#39;,&#39;Sobel(2008)&#39; ,&quot;LSEM {Baron1986}&quot;),
+                            levels=c(&#39;Liml equivalent&#39;,&#39;CMMA&#39;, &#39;proposed IV equivalent&#39;, &#39;IV (small)&#39;,&#39;pooled ols&#39;)))%&gt;%
+  arrange(Estimator)%&gt;%
+  kable(format=&quot;html&quot;,digits = 3,position = &quot;center&quot;,align = &quot;c&quot;,
+        col.names = c(&quot;Estimator&quot;,
+                                &quot;Bias&quot;,&quot;95% CI coverage&quot;, 
+                                &quot;Bias&quot;,&quot;95% CI coverage&quot;, 
+                                &quot;Bias&quot;,&quot;95% CI coverage&quot;),escape = F)%&gt;%
+  add_header_above(escape = F,c(&quot; &quot; = 1, &quot;$N_{per}=200$&quot; = 2,&quot;$N_{per}=500$&quot; = 2,&quot;$N_{per}=1000$&quot;=2))</code></pre>
+<table>
+<thead>
+<tr>
+<th style="border-bottom:hidden" colspan="1">
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+<span class="math inline">\(N_{per}=200\)</span>
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+<span class="math inline">\(N_{per}=500\)</span>
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+<span class="math inline">\(N_{per}=1000\)</span>
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:center;">
+Estimator
+</th>
+<th style="text-align:center;">
+Bias
+</th>
+<th style="text-align:center;">
+95% CI coverage
+</th>
+<th style="text-align:center;">
+Bias
+</th>
+<th style="text-align:center;">
+95% CI coverage
+</th>
+<th style="text-align:center;">
+Bias
+</th>
+<th style="text-align:center;">
+95% CI coverage
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+LIML
+</td>
+<td style="text-align:center;">
+0.003
+</td>
+<td style="text-align:center;">
+94%
+</td>
+<td style="text-align:center;">
+-0.002
+</td>
+<td style="text-align:center;">
+94%
+</td>
+<td style="text-align:center;">
+0.000
+</td>
+<td style="text-align:center;">
+95%
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+CMMA
+</td>
+<td style="text-align:center;">
+0.058
+</td>
+<td style="text-align:center;">
+67%
+</td>
+<td style="text-align:center;">
+0.020
+</td>
+<td style="text-align:center;">
+88%
+</td>
+<td style="text-align:center;">
+0.011
+</td>
+<td style="text-align:center;">
+88%
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Full Sample 2SLS
+</td>
+<td style="text-align:center;">
+0.058
+</td>
+<td style="text-align:center;">
+67%
+</td>
+<td style="text-align:center;">
+0.020
+</td>
+<td style="text-align:center;">
+86%
+</td>
+<td style="text-align:center;">
+0.011
+</td>
+<td style="text-align:center;">
+91%
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Sobel(2008)
+</td>
+<td style="text-align:center;">
+0.308
+</td>
+<td style="text-align:center;">
+3%
+</td>
+<td style="text-align:center;">
+0.279
+</td>
+<td style="text-align:center;">
+3%
+</td>
+<td style="text-align:center;">
+0.283
+</td>
+<td style="text-align:center;">
+3%
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+LSEM {Baron1986}
+</td>
+<td style="text-align:center;">
+0.937
+</td>
+<td style="text-align:center;">
+0%
+</td>
+<td style="text-align:center;">
+0.936
+</td>
+<td style="text-align:center;">
+0%
+</td>
+<td style="text-align:center;">
+0.937
+</td>
+<td style="text-align:center;">
+0%
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="table-2-assumption-violation" class="section level3">
+<h3>Table 2: Assumption Violation</h3>
+<pre class="r"><code># Table output
+# ## Assumption Violation
+
+out3 &lt;- lapply(c(200,500,1000), 
+                   function(n) mc_model_main(simu_model_1,n,50, CMMA_estimator_only = T))%&gt;%
+  map(mutate,violation=&#39;None&#39;)
+out3_A2 &lt;-  lapply(c(200,500,1000), 
+                   function(n) mc_model_main(simu_model_1,n,50, CMMA_estimator_only = T,  violate_A2 =T))%&gt;%
+  map(mutate,violation=&#39;A2&#39;)
+out3_A3 &lt;-  lapply(c(200,500,1000), 
+                   function(n) mc_model_main(simu_model_1,n,50, CMMA_estimator_only = T,  violate_A3 =T))%&gt;%
+  map(mutate,violation=&#39;A3&#39;)
+out3_A4 &lt;-  lapply(c(200,500,1000), 
+                   function(n) mc_model_main(simu_model_1,n,50, CMMA_estimator_only = T,  violate_A4 =T))%&gt;%
+  map(mutate,violation=&#39;A4&#39;)
+
+lapply(list(out3, out3_A2, out3_A3, out3_A4), function(data){
+  violation_str &lt;- data[[1]]%&gt;%select(violation)%&gt;%pluck(1,1)
+  data%&gt;%map(simulation_summary,
+             models=c(&#39;CMMA&#39;),
+             est_valname=&#39;M1_coef&#39;,std_valname=&#39;M1_std&#39;, 4)%&gt;%
+    bind_rows()%&gt;%
+    mutate(ci_covprob = paste(round(ci_covprob*100,1),&#39;%&#39;,sep = &#39;&#39;),
+           violation=!!violation_str)
+}) %&gt;% 
+  bind_rows()%&gt;%
+  dplyr::select(samplesize_per_trial,no_trials,violation,bias,ci_covprob)%&gt;%
+  group_by(samplesize_per_trial)%&gt;%
+  group_split()%&gt;%
+  bind_cols()%&gt;%
+  dplyr::select(-matches(&#39;violation.&#39;),
+                -starts_with(&#39;no_trials&#39;),
+                -starts_with(&#39;samplesize_per_trial&#39;))%&gt;%
+  mutate(violation = factor(violation,
+                            levels=c(&#39;None&#39;,&#39;A2&#39;, &#39;A3&#39;, &#39;A4&#39;)))%&gt;%
+  arrange(violation)%&gt;%
+  kable(format=&quot;html&quot;,digits = 3,booktabs = T,position = &quot;center&quot;,align = &quot;c&quot;,
+        col.names = c(&quot;Estimator&quot;,
+                      &quot;Bias&quot;,&quot;95% CI coverage&quot;, 
+                      &quot;Bias&quot;,&quot;95% CI coverage&quot;, 
+                      &quot;Bias&quot;,&quot;95% CI coverage&quot;))%&gt;%
+  add_header_above(escape = F,c(&quot; &quot; = 1, &quot;$N_{per}=200$&quot; = 2,&quot;$N_{per}=500$&quot; = 2,&quot;$N_{per}=1000$&quot;=2))</code></pre>
+<table>
+<thead>
+<tr>
+<th style="border-bottom:hidden" colspan="1">
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+<span class="math inline">\(N_{per}=200\)</span>
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+<span class="math inline">\(N_{per}=500\)</span>
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+<span class="math inline">\(N_{per}=1000\)</span>
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:center;">
+Estimator
+</th>
+<th style="text-align:center;">
+Bias
+</th>
+<th style="text-align:center;">
+95% CI coverage
+</th>
+<th style="text-align:center;">
+Bias
+</th>
+<th style="text-align:center;">
+95% CI coverage
+</th>
+<th style="text-align:center;">
+Bias
+</th>
+<th style="text-align:center;">
+95% CI coverage
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+None
+</td>
+<td style="text-align:center;">
+0.058
+</td>
+<td style="text-align:center;">
+67%
+</td>
+<td style="text-align:center;">
+0.020
+</td>
+<td style="text-align:center;">
+88%
+</td>
+<td style="text-align:center;">
+0.011
+</td>
+<td style="text-align:center;">
+88%
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+A2
+</td>
+<td style="text-align:center;">
+0.065
+</td>
+<td style="text-align:center;">
+65%
+</td>
+<td style="text-align:center;">
+0.024
+</td>
+<td style="text-align:center;">
+87%
+</td>
+<td style="text-align:center;">
+0.009
+</td>
+<td style="text-align:center;">
+93%
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+A3
+</td>
+<td style="text-align:center;">
+0.483
+</td>
+<td style="text-align:center;">
+0%
+</td>
+<td style="text-align:center;">
+0.470
+</td>
+<td style="text-align:center;">
+0%
+</td>
+<td style="text-align:center;">
+0.460
+</td>
+<td style="text-align:center;">
+0%
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+A4
+</td>
+<td style="text-align:center;">
+0.949
+</td>
+<td style="text-align:center;">
+0%
+</td>
+<td style="text-align:center;">
+0.931
+</td>
+<td style="text-align:center;">
+0%
+</td>
+<td style="text-align:center;">
+0.942
+</td>
+<td style="text-align:center;">
+0%
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="table-3-model-selection-and-wald-tests" class="section level3">
+<h3>Table 3: Model Selection and Wald Tests</h3>
+<pre class="r"><code># Wald test table
+## mu(m) = beta2*m
+
+out_model1 &lt;-  mc_model_main(simu_model_1,1000,100, DRF_degree=3, wald_test= TRUE)
+## mu(m) = beta2*m + beta3*m^2
+out_model2 &lt;-  mc_model_main(simu_model_2,1000,100, DRF_degree=3, wald_test= TRUE)
+## mu(m) = beta2*m + 0 + beta4*m^3
+out_model3 &lt;-  mc_model_main(simu_model_3,1000,100, DRF_degree=3, wald_test= TRUE)
+
+bind_rows(
+  out_model1%&gt;%
+  wald_test_summary%&gt;%
+  dplyr::select(`p value, m3`,`p value, m2 m3`,`p value, m m2 m3`)%&gt;%
+  mutate(`$\\mu(m)$`=&#39;$4m$&#39;,
+         degree = 1,
+         estimate=out_model1 %&gt;%
+           get_avg_simulated_estimate(&#39;CMMA with M&#39;, c(&#39;M1_coef&#39;))%&gt;%
+           as_vector()%&gt;%round(3)%&gt;%paste(collapse=&#39;, &#39;)),
+  out_model2%&gt;%wald_test_summary%&gt;%
+  dplyr::select(`p value, m3`,`p value, m2 m3`,`p value, m m2 m3`)%&gt;%
+  mutate(`$\\mu(m)$`=&#39;$4m + 2m^2$&#39;,
+         degree = 2,
+         estimate=out_model2 %&gt;%
+           get_avg_simulated_estimate(&#39;CMMA with M, M^2&#39;,c(&#39;M1_coef&#39;,&#39;M2_coef&#39;))%&gt;%
+           as_vector()%&gt;%round(3)%&gt;%paste(collapse=&#39;, &#39;)),
+  out_model3%&gt;%wald_test_summary%&gt;%
+  dplyr::select(`p value, m3`,`p value, m2 m3`, `p value, m m2 m3`)%&gt;%
+  mutate(`$\\mu(m)$`=&#39;$4m + 0m^2 + 5m^3$&#39;,
+         degree = 3,
+         estimate=out_model3 %&gt;%
+           get_avg_simulated_estimate(&#39;CMMA with M, M^2 and M^3&#39;,c(&#39;M1_coef&#39;,&#39;M2_coef&#39;, &#39;M3_coef&#39;))%&gt;%
+           as_vector()%&gt;%round(3)%&gt;%paste(collapse=&#39;, &#39;)))%&gt;%
+  dplyr::select(`$\\mu(m)$`,everything())%&gt;%
+  kable(format=&quot;html&quot;,digits = 2,booktabs = T,escape=FALSE, position = &quot;center&quot;,align = &quot;c&quot;,
+        col.names = c(&quot;$\\mu(m)$&quot;,&quot;$H_0: \\beta_3 = 0$&quot;,&quot;$H_0: \\beta_2 = \\beta_3 = 0$&quot;,
+                      &quot;$H_0: \\beta_1=\\beta_2=\\beta_3= 0$&quot;, &quot;Highest degree used&quot;,
+                      &quot;Results&quot;))%&gt;%
+  add_header_above(c(&quot; &quot;=1, &quot;% of Wald Tests Rejecting $H_0$&quot; = 3,&quot;CMMA Estimation&quot;=2))</code></pre>
+<table>
+<thead>
+<tr>
+<th style="border-bottom:hidden" colspan="1">
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+% of Wald Tests Rejecting <span class="math inline">\(H_0\)</span>
+</div>
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+CMMA Estimation
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:center;">
+<span class="math inline">\(\mu(m)\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(H_0: \beta_3 = 0\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(H_0: \beta_2 = \beta_3 = 0\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(H_0: \beta_1=\beta_2=\beta_3= 0\)</span>
+</th>
+<th style="text-align:center;">
+Highest degree used
+</th>
+<th style="text-align:center;">
+Results
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(4m\)</span>
+</td>
+<td style="text-align:center;">
+0.05
+</td>
+<td style="text-align:center;">
+0.09
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+4.01
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(4m + 2m^2\)</span>
+</td>
+<td style="text-align:center;">
+0.05
+</td>
+<td style="text-align:center;">
+1.00
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+4.015, 1.998
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(4m + 0m^2 + 5m^3\)</span>
+</td>
+<td style="text-align:center;">
+1.00
+</td>
+<td style="text-align:center;">
+1.00
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+4.013, -0.002, 5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
