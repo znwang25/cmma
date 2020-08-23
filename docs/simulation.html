@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -232,7 +233,6 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
-  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -443,6 +443,8 @@ g &lt;- ggplot(data = samp_df, aes(x=Mi, y=Yi)) +
   labs(x=&#39;M&#39;,y=&#39;Y&#39;)+
   theme_few()
 g</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;
+## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="simulation_files/figure-html/draw_graph-1.png" width="672" /></p>
 <pre class="r"><code># ggsave(&#39;potential_outcomes.png&#39;,g,scale=scale)</code></pre>
 </div>
@@ -467,7 +469,7 @@ felm(Yi~1+Mi|factor(Ti):trial_index +trial_index|0|trial_index,data=sim_data_tem
 ## 
 ## Coefficients:
 ##    Estimate Cluster s.e. t value Pr(&gt;|t|)    
-## Mi  4.92506      0.01052   468.1   &lt;2e-16 ***
+## Mi  4.92506      0.01053   467.7   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -475,7 +477,7 @@ felm(Yi~1+Mi|factor(Ti):trial_index +trial_index|0|trial_index,data=sim_data_tem
 ## Multiple R-squared(full model): 0.9849   Adjusted R-squared: 0.9849 
 ## Multiple R-squared(proj model): 0.9809   Adjusted R-squared: 0.9809 
 ## F-statistic(full model, *iid*):3.263e+04 on 20 and 9979 DF, p-value: &lt; 2.2e-16 
-## F-statistic(proj model): 2.192e+05 on 1 and 9 DF, p-value: &lt; 2.2e-16</code></pre>
+## F-statistic(proj model): 2.187e+05 on 1 and 9 DF, p-value: &lt; 2.2e-16</code></pre>
 <pre class="r"><code># IV (sobel)
 felm(Yi~1+Ti|trial_index|(Mi~trial_index:factor(Ti))|trial_index,data=sim_data_temp)%&gt;%summary    </code></pre>
 <pre><code>## 
@@ -488,8 +490,8 @@ felm(Yi~1+Ti|trial_index|(Mi~trial_index:factor(Ti))|trial_index,data=sim_data_t
 ## 
 ## Coefficients:
 ##           Estimate Cluster s.e. t value Pr(&gt;|t|)    
-## TiTRUE      1.5219       0.3975   3.829  0.00404 ** 
-## `Mi(fit)`   4.0115       0.2214  18.117 2.17e-08 ***
+## TiTRUE      1.5219       0.3977   3.827 0.000131 ***
+## `Mi(fit)`   4.0115       0.2215  18.109  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -497,8 +499,8 @@ felm(Yi~1+Ti|trial_index|(Mi~trial_index:factor(Ti))|trial_index,data=sim_data_t
 ## Multiple R-squared(full model): 0.9571   Adjusted R-squared: 0.9571 
 ## Multiple R-squared(proj model): 0.9502   Adjusted R-squared: 0.9502 
 ## F-statistic(full model, *iid*): 4429 on 11 and 9988 DF, p-value: &lt; 2.2e-16 
-## F-statistic(proj model): 224.2 on 2 and 9 DF, p-value: 2.102e-08 
-## F-statistic(endog. vars):328.2 on 1 and 9 DF, p-value: 2.168e-08</code></pre>
+## F-statistic(proj model):   224 on 2 and 9 DF, p-value: 2.111e-08 
+## F-statistic(endog. vars):327.9 on 1 and 9 DF, p-value: 2.176e-08</code></pre>
 <pre class="r"><code># IV equivalent
 iv_form &lt;- as.formula(paste(&quot;Yi~1+&quot;, 
                             paste(grep(&quot;treatment_group.*Ti&quot;, names(sim_data_temp), value=TRUE), 
@@ -515,10 +517,10 @@ felm(iv_form,data=sim_data_temp)%&gt;%summary </code></pre>
 ## 
 ## Coefficients:
 ##                    Estimate Cluster s.e. t value Pr(&gt;|t|)    
-## treatment_group1Ti  0.05094      0.08840   0.576    0.579    
-## treatment_group2Ti  1.49333      0.06467  23.092 2.55e-09 ***
-## treatment_group3Ti  2.96457      0.27366  10.833 1.83e-06 ***
-## `Mi(fit)`           4.02955      0.03665 109.932 2.16e-15 ***
+## treatment_group1Ti  0.05094      0.08844   0.576    0.565    
+## treatment_group2Ti  1.49333      0.06470  23.082   &lt;2e-16 ***
+## treatment_group3Ti  2.96457      0.27378  10.828   &lt;2e-16 ***
+## `Mi(fit)`           4.02955      0.03667 109.882   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -526,8 +528,8 @@ felm(iv_form,data=sim_data_temp)%&gt;%summary </code></pre>
 ## Multiple R-squared(full model): 0.9593   Adjusted R-squared: 0.9592 
 ## Multiple R-squared(proj model): 0.9527   Adjusted R-squared: 0.9527 
 ## F-statistic(full model, *iid*): 3965 on 13 and 9986 DF, p-value: &lt; 2.2e-16 
-## F-statistic(proj model):  4141 on 4 and 9 DF, p-value: 1.114e-14 
-## F-statistic(endog. vars):1.209e+04 on 1 and 9 DF, p-value: 2.165e-15</code></pre>
+## F-statistic(proj model):  4137 on 4 and 9 DF, p-value: 1.119e-14 
+## F-statistic(endog. vars):1.207e+04 on 1 and 9 DF, p-value: 2.174e-15</code></pre>
 <pre class="r"><code># Liml
 felm(iv_form,data=sim_data_temp, kclass=&#39;liml&#39;)%&gt;%summary    </code></pre>
 <pre><code>## 
@@ -540,10 +542,10 @@ felm(iv_form,data=sim_data_temp, kclass=&#39;liml&#39;)%&gt;%summary    </code><
 ## 
 ## Coefficients:
 ##                    Estimate Cluster s.e. t value Pr(&gt;|t|)    
-## treatment_group1Ti  0.08836      0.08789   1.005    0.341    
-## treatment_group2Ti  1.50426      0.06696  22.466 3.25e-09 ***
-## treatment_group3Ti  2.99915      0.26908  11.146 1.44e-06 ***
-## Mi                  4.00670      0.03959 101.201 4.56e-15 ***
+## treatment_group1Ti  0.08836      0.08793   1.005    0.315    
+## treatment_group2Ti  1.50426      0.06699  22.456   &lt;2e-16 ***
+## treatment_group3Ti  2.99915      0.26920  11.141   &lt;2e-16 ***
+## Mi                  4.00670      0.03961 101.156   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -551,7 +553,7 @@ felm(iv_form,data=sim_data_temp, kclass=&#39;liml&#39;)%&gt;%summary    </code><
 ## Multiple R-squared(full model): 0.9579   Adjusted R-squared: 0.9578 
 ## Multiple R-squared(proj model): 0.9512   Adjusted R-squared: 0.951 
 ## F-statistic(full model, *iid*): 7093 on 32 and 9967 DF, p-value: &lt; 2.2e-16 
-## F-statistic(proj model):  3404 on 4 and 9 DF, p-value: 2.689e-14</code></pre>
+## F-statistic(proj model):  3401 on 4 and 9 DF, p-value: 2.7e-14</code></pre>
 <pre class="r"><code># CMMA
 meta_data &lt;- get_meta_data(sim_data_temp, 1)
 lm(delta_y ~ 1  + treatment_group + delta_m1, data=meta_data)%&gt;%summary</code></pre>
@@ -905,19 +907,19 @@ Bias
 LIML
 </td>
 <td style="text-align:center;">
-0.003
+-0.005
 </td>
 <td style="text-align:center;">
-94%
+92%
 </td>
 <td style="text-align:center;">
--0.002
+-0.003
 </td>
 <td style="text-align:center;">
-94%
+95%
 </td>
 <td style="text-align:center;">
-0.000
+0.001
 </td>
 <td style="text-align:center;">
 95%
@@ -928,42 +930,19 @@ LIML
 CMMA
 </td>
 <td style="text-align:center;">
-0.058
+0.050
 </td>
 <td style="text-align:center;">
-67%
+71%
 </td>
 <td style="text-align:center;">
-0.020
+0.019
 </td>
 <td style="text-align:center;">
-88%
+90%
 </td>
 <td style="text-align:center;">
-0.011
-</td>
-<td style="text-align:center;">
-88%
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Full Sample 2SLS
-</td>
-<td style="text-align:center;">
-0.058
-</td>
-<td style="text-align:center;">
-67%
-</td>
-<td style="text-align:center;">
-0.020
-</td>
-<td style="text-align:center;">
-86%
-</td>
-<td style="text-align:center;">
-0.011
+0.013
 </td>
 <td style="text-align:center;">
 91%
@@ -971,25 +950,48 @@ Full Sample 2SLS
 </tr>
 <tr>
 <td style="text-align:center;">
+Full Sample 2SLS
+</td>
+<td style="text-align:center;">
+0.050
+</td>
+<td style="text-align:center;">
+69%
+</td>
+<td style="text-align:center;">
+0.019
+</td>
+<td style="text-align:center;">
+89%
+</td>
+<td style="text-align:center;">
+0.013
+</td>
+<td style="text-align:center;">
+90%
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
 Sobel(2008)
 </td>
 <td style="text-align:center;">
-0.308
+0.292
 </td>
 <td style="text-align:center;">
-3%
-</td>
-<td style="text-align:center;">
-0.279
-</td>
-<td style="text-align:center;">
-3%
+4%
 </td>
 <td style="text-align:center;">
 0.283
 </td>
 <td style="text-align:center;">
-3%
+1%
+</td>
+<td style="text-align:center;">
+0.274
+</td>
+<td style="text-align:center;">
+4%
 </td>
 </tr>
 <tr>
@@ -997,13 +999,13 @@ Sobel(2008)
 LSEM {Baron1986}
 </td>
 <td style="text-align:center;">
-0.937
+0.934
 </td>
 <td style="text-align:center;">
 0%
 </td>
 <td style="text-align:center;">
-0.936
+0.938
 </td>
 <td style="text-align:center;">
 0%
@@ -1113,22 +1115,22 @@ Bias
 None
 </td>
 <td style="text-align:center;">
-0.058
+0.050
 </td>
 <td style="text-align:center;">
-67%
+71%
 </td>
 <td style="text-align:center;">
-0.020
+0.022
 </td>
 <td style="text-align:center;">
-88%
+86%
 </td>
 <td style="text-align:center;">
-0.011
+0.013
 </td>
 <td style="text-align:center;">
-88%
+89%
 </td>
 </tr>
 <tr>
@@ -1136,22 +1138,22 @@ None
 A2
 </td>
 <td style="text-align:center;">
-0.065
+0.066
 </td>
 <td style="text-align:center;">
-65%
+74%
 </td>
 <td style="text-align:center;">
-0.024
+0.020
 </td>
 <td style="text-align:center;">
-87%
+89%
 </td>
 <td style="text-align:center;">
-0.009
+0.013
 </td>
 <td style="text-align:center;">
-93%
+91%
 </td>
 </tr>
 <tr>
@@ -1159,19 +1161,19 @@ A2
 A3
 </td>
 <td style="text-align:center;">
-0.483
+0.486
 </td>
 <td style="text-align:center;">
 0%
 </td>
 <td style="text-align:center;">
-0.470
+0.471
 </td>
 <td style="text-align:center;">
 0%
 </td>
 <td style="text-align:center;">
-0.460
+0.463
 </td>
 <td style="text-align:center;">
 0%
@@ -1182,19 +1184,19 @@ A3
 A4
 </td>
 <td style="text-align:center;">
-0.949
+0.930
 </td>
 <td style="text-align:center;">
 0%
 </td>
 <td style="text-align:center;">
-0.931
+0.924
 </td>
 <td style="text-align:center;">
 0%
 </td>
 <td style="text-align:center;">
-0.942
+0.937
 </td>
 <td style="text-align:center;">
 0%
@@ -1286,10 +1288,10 @@ Results
 <span class="math inline">\(4m\)</span>
 </td>
 <td style="text-align:center;">
-0.05
+0.07
 </td>
 <td style="text-align:center;">
-0.09
+0.11
 </td>
 <td style="text-align:center;">
 1
@@ -1306,7 +1308,7 @@ Results
 <span class="math inline">\(4m + 2m^2\)</span>
 </td>
 <td style="text-align:center;">
-0.05
+0.04
 </td>
 <td style="text-align:center;">
 1.00
@@ -1318,7 +1320,7 @@ Results
 2
 </td>
 <td style="text-align:center;">
-4.015, 1.998
+4.012, 1.999
 </td>
 </tr>
 <tr>
@@ -1338,7 +1340,7 @@ Results
 3
 </td>
 <td style="text-align:center;">
-4.013, -0.002, 5
+4.013, -0.001, 5
 </td>
 </tr>
 </tbody>
