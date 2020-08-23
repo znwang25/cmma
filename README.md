@@ -2,7 +2,9 @@
 ## KDD 2020: Accepted and 20-Min Oral Presentation (Selection Rate: 5.8%, 44 out of 756)
 
 ## Citation
-Zenan Wang, Xuan Yin, Tianbo Li, and Liangjie Hong. 2020. [Causal Meta-Mediation Analysis: Inferring Dose-Response Function From Summary Statistics of Many Randomized Experiments](https://arxiv.org/abs/2006.09666). In *Proceedings of the 26th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD ’20), August 23-27, 2020, Virtual Event, CA, USA*. ACM, New York, NY, USA, 11 pages. https://doi.org/10.1145/3394486.3403313
+Zenan Wang, Xuan Yin, Tianbo Li, and Liangjie Hong. 2020. [Causal Meta-Mediation Analysis: Inferring Dose-Response Function From Summary Statistics of Many Randomized Experiments](https://www.kdd.org/kdd2020/accepted-papers/view/causal-meta-mediation-analysis-inferring-dose-response-function-from-summar). In *Proceedings of the 26th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD ’20), August 23-27, 2020, Virtual Event, CA, USA*. ACM, New York, NY, USA, 11 pages. https://doi.org/10.1145/3394486.3403313
+
+## <ins>[The Published Version of the Paper](https://www.kdd.org/kdd2020/accepted-papers/view/causal-meta-mediation-analysis-inferring-dose-response-function-from-summar)</ins>
 
 ## <ins>[Promotional Video](https://vimeo.com/443926980)</ins>
 
