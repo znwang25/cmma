@@ -6,7 +6,7 @@ Zenan Wang, Xuan Yin, Tianbo Li, and Liangjie Hong. 2020. [Causal Meta-Mediation
 
 ## <ins>[The Published Version of the Paper](https://www.kdd.org/kdd2020/accepted-papers/view/causal-meta-mediation-analysis-inferring-dose-response-function-from-summar)</ins>
 
-## <ins>[Promotional Video](https://vimeo.com/443926980)</ins>
+## <ins>[Promotional Video on YouTube](https://youtu.be/cFwszo3riSc)</ins>
 
 ## <ins>[Code-as-Craft Post](https://codeascraft.com/2020/08/03/causal-inference-to-pick-north-star-metric-for-algorithms-to-optimize-business-kpi/)</ins>
 
